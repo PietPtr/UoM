@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h4>{{message}}</h4>
+
+    <form action="{{action_link}}" method="post" class="someform">
+        {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+        </table>
+        <input type="submit" value="OK">
+    </form>
+
+
+{% endblock %}

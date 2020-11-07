@@ -1,0 +1,71 @@
+/* The sidebar menu */
+.sidenav {
+    height: 100%;
+    width: 150px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #0c0c0c;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+}
+
+.teachernav {
+    background-color: rgb(53, 87, 54);
+}
+
+.studentnav {
+    background-color: rgb(53, 54, 87);
+}
+
+/* The navigation menu links */
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #ececec;
+    display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    background-color: rgb(75, 116, 76);
+}
+
+/* Style page content */
+.main {
+    margin-left: 150px; /* Same as the width of the sidebar */
+    padding: 1%;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.modeswitcher {
+    bottom: 10px;
+    width: 100%;
+    position: absolute;
+    display: block;
+}
+
+h4 {
+    padding-top: 1em;
+}
+
+
+.delete_button:hover {
+    background-color: rgb(245, 118, 118);
+    visibility: visible;
+}
+
+a:hover .delete_button {
+    visibility: visible;
+}
+
+
+a .delete_button {
+    visibility: hidden;
+    border: none;
+}

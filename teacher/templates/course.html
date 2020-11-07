@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ course.name }}</h1>
+
+    <p>{{course.description}}</p>
+
+    <h4>Aims</h4>
+
+    <ul class="list-group list-group-flush">
+    <a href="/teacher/new_aim/{{course.id}}" class="list-group-item list-group-item-action">
+        <strong>New aim</strong>
+    </a>
+    {% for aim in aims %}
+        <a href="/teacher/aim/{{aim.id}}" class="list-group-item list-group-item-action">
+            <div class="d-flex justify-content-between">
+                {{aim.description}}
+                <form action="{% url 'delete_aim' aim.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="x" class="delete_button">
+                </form>
+            </div>
+        </a>
+    {% endfor %}
+    </ul>
+
+    <h4>Actions</h4>
+    <ul class="list-group list-group-flush">
+    <a href="/teacher/new_action/{{course.id}}" class="list-group-item list-group-item-action">
+        <strong>New action</strong>
+    </a>
+    {% for action in actions %}
+        <a href="/teacher/action/{{action.id}}" class="list-group-item list-group-item-action">
+            <div class="d-flex justify-content-between">
+                {{action.description}}
+                <form action="{% url 'delete_action' action.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="x" class="delete_button">
+                </form>
+            </div>
+        </a>
+    {% endfor %}
+        <li class="list-group-item"></li>
+    </ul>
+
+
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% comment %} Should show course name, enrollment status, ... {% endcomment %}
+
+
+    <div class="list-group-flush">
+        <a href="new_course/" class="list-group-item list-group-item-action">
+            <strong>New course</strong>
+        </a>
+    {% for course in courses %}
+        <a href="course/{{course.id}}" class="list-group-item list-group-item-action">
+            {{course}}
+        </a>
+    {% endfor %}
+    </div>
+
+
+{% endblock %}
