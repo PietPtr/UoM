@@ -28,12 +28,17 @@ def new_course(request):
                 study_load=form.cleaned_data['study_load']
             )
             course.save()
-        return HttpResponseRedirect('/teacher/')
-
+            return edit_course(request, course.id)
     else:
         form = NewCourseForm()
 
-    return render(request, 'new_course.html', {'form': form})
+    context = {
+        'form': form,
+        'message': 'Enter a name for this course.',
+        'action_link': '/teacher/new_course/'
+    }
+
+    return render(request, 'new_unit.html', context)
 
 
 def edit_course(request, course_id):
@@ -41,6 +46,7 @@ def edit_course(request, course_id):
     context['course'] = Course.objects.get(pk=course_id)
     context['aims'] = Aim.objects.filter(course=course_id)
     context['actions'] = Action.objects.filter(course=course_id)
+    context['materials'] = Material.objects.filter(course=course_id)
 
     return render(request, 'course.html', context)
 
@@ -103,7 +109,7 @@ def delete_aim(request, aim_id):
 
 def new_action(request, course_id):
     if request.method == 'POST':
-        form = NewActionForm(request.POST)
+        form = NewActionForm(request.POST, course_id=course_id)
         if form.is_valid():
             action = Action(
                 description=form.cleaned_data['description'],
@@ -112,7 +118,7 @@ def new_action(request, course_id):
             action.save()
             return edit_course(request, course_id)
     else:
-        form = NewActionForm()
+        form = NewActionForm(course_id=course_id)
 
     context = {
         'form': form,
@@ -130,16 +136,20 @@ def edit_action(request, action_id):
         form = NewActionForm(request.POST, course_id=course_id)
         if form.is_valid():
             action.description = form.cleaned_data['description']
+            action.aims.set(form.cleaned_data['aims'])
             action.save()
         return edit_course(request, course_id)
     else:
+        print(action.aims.all())
         form = NewActionForm(initial={
-            'description': action.description
+            'description': action.description,
+            'aims': action.aims.all(),
+            'materials': action.materials.all()
         }, course_id=course_id)
 
     context = {
         'form': form,
-        'message': 'Edit properties of this aim.',
+        'message': 'Edit properties of this action.',
         'action_link': '/teacher/action/' + str(action_id) + '/'
     }
 
@@ -153,3 +163,34 @@ def delete_action(request, action_id):
         action.delete()
 
     return edit_course(request, action.course.id)
+
+
+def new_material(request, course_id):
+    if request.method == 'POST':
+        form = NewMaterialForm(request.POST, request.FILES)
+        if form.is_valid():
+            print(request.FILES)
+            material = Material(
+                file=request.FILES['file'],
+                course=Course.objects.get(id=course_id))
+            material.save()
+            return edit_course(request, course_id)
+    else:
+        form = NewMaterialForm()
+
+    context = {
+        'form': form,
+        'message': 'Upload new material for this course.',
+        'action_link': '/teacher/new_material/' + str(course_id) + '/'
+    }
+
+    return render(request, 'new_unit.html', context)
+
+
+def delete_material(request, material_id):
+    material = get_object_or_404(Material, pk=material_id)
+
+    if request.method == 'POST':
+        material.delete()
+
+    return edit_course(request, material.course.id)

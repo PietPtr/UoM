@@ -19,18 +19,22 @@ class Aim(models.Model):
         return "%s: %s" % (self.course, self.description)
 
 
-class Action(models.Model):
-    description = models.TextField()
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    aims = models.ManyToManyField(Aim)
-
-    def __str__(self):
-        return self.description
-
-
 class Material(models.Model):
+    # TODO: misschien mogelijkheid nodig om files betere namen te geven
+    # TODO: misschien moet het ook een description krijgen of zo, maarja
+    # dan werkt click to download niet leuk
     file = models.FileField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "%s (%s)" % (file.name, course)
+        return "%s (%s)" % (self.file.name, self.course)
+
+
+class Action(models.Model):
+    description = models.TextField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    aims = models.ManyToManyField(Aim)
+    materials = models.ManyToManyField(Material)
+
+    def __str__(self):
+        return self.description

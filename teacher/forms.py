@@ -26,4 +26,13 @@ class NewActionForm(forms.Form):
         course_id = kwargs.pop('course_id')
         super(forms.Form, self).__init__(*args, **kwargs)
         self.fields['aims'] = forms.ModelMultipleChoiceField(
-            Aim.objects.filter(course=course_id))
+            Aim.objects.filter(course=course_id),
+            widget=forms.CheckboxSelectMultiple)
+
+        self.fields['materials'] = forms.ModelMultipleChoiceField(
+            Material.objects.filter(course=course_id),
+            widget=forms.CheckboxSelectMultiple)
+
+
+class NewMaterialForm(forms.Form):
+    file = forms.FileField()
