@@ -6,16 +6,11 @@ from .models import Course, Aim, Action
 from .forms import *
 
 
-class MyCourses(generic.TemplateView):
-
-    template_name = 'overview.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(MyCourses, self).get_context_data(**kwargs)
-
-        context['courses'] = list(Course.objects.all())
-
-        return context
+def all_courses(request):
+    context = {
+        'courses': Course.objects.all()
+    }
+    return render(request, 'overview.html', context)
 
 
 def new_course(request):

@@ -13,7 +13,7 @@ urlpatterns = [
          views.new_material, name="new_material"),
     path('new_course/', views.new_course, name='new_course'),
 
-    path('', views.MyCourses.as_view(), name='my_courses'),
+    path('', views.all_courses, name='my_courses'),
     path('delete_aim/<int:aim_id>/', views.delete_aim, name='delete_aim'),
     path('delete_action/<int:action_id>/',
          views.delete_action, name='delete_action'),

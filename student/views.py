@@ -1,3 +1,10 @@
 from django.shortcuts import render
 
-# Create your views here.
+from teacher.models import *
+
+
+def all_coursess(request):
+    context = {
+        'courses': Course.objects.all()
+    }
+    return render(request, 'all_courses.html', context)

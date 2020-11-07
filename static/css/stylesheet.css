@@ -29,8 +29,12 @@
 }
 
 /* When you mouse over the navigation links, change their color */
-.sidenav a:hover {
+.sidenav.teachernav a:hover {
     background-color: rgb(75, 116, 76);
+}
+
+.sidenav.studentnav a:hover {
+    background-color: rgb(80, 82, 131);
 }
 
 /* Style page content */
