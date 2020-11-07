@@ -1,6 +1,6 @@
 *secret.py
 .vscode/
 env/
-*__pycache__/
+__pycache__/
 media/*
 *.md
