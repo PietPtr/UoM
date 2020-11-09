@@ -20,8 +20,7 @@ class Aim(models.Model):
 
 class Material(models.Model):
     # TODO: misschien mogelijkheid nodig om files betere namen te geven
-    # TODO: misschien moet het ook een description krijgen of zo, maarja
-    # dan werkt click to download niet leuk
+    # TODO: misschien moet het ook een description krijgen of zo in de teacher view
     file = models.FileField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 

@@ -1,0 +1,68 @@
+{% extends 'teacher.html' %}
+
+{% block content %}
+
+    <h1>{{ course.name }}</h1>
+
+    <a href="details" class="btn btn-secondary btn-lg course-edit">
+        <i class="fa fa-edit"></i> Edit course
+    </a>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'home' %}active{% endif %}" 
+                href="/teacher/course/{{course.id}}">
+                    Home
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'aims' %}active{% endif %}" 
+                href="/teacher/course/{{course.id}}/aims">
+                    Aims
+                </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'actions' %}active{% endif %}" 
+                href="/teacher/course/{{course.id}}/actions">
+                    Actions
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'materials' %}active{% endif %}" 
+                href="/teacher/course/{{course.id}}/materials">
+                    Materials
+            </a>
+        </li>
+    </ul>
+
+
+    {% block course_data %}
+
+    {% endblock %}
+
+
+    <script>
+    
+    function editOrdering(direction, actionId) {
+        console.log(direction);
+
+        $.ajax({
+            url: "/teacher/action/" + actionId + "/ordering/",
+            type: "POST",
+            data: addcsrf({ direction }),
+            success: (result) => {
+               location.reload();
+            },
+            error: (result) => {
+                console.error(result);
+            }
+        }).fail((xhr, text, error) => {
+            console.error(xhr, text, error);
+        })
+
+        event.stopPropagation(); 
+    }
+    
+    </script>
+
+{% endblock %}

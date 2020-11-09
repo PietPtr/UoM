@@ -1,0 +1,22 @@
+{% extends 'course/base.html' %}
+
+{% block course_data %}
+<ul class="list-group list-group-flush" id="materials_list">
+        <a href="/teacher/new_material/{{course.id}}" class="list-group-item list-group-item-action">
+            <strong>Upload new material</strong>
+        </a>
+    {% for material in materials %}
+        <a href="{{ material.file.url }}" class="list-group-item list-group-item-action hover-elem">
+            <div class="d-flex justify-content-between">
+                {{material.file.name}}
+                <form action="{% url 'delete_material' material.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="hover-button delete-button">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </a>    
+    {% endfor %}
+</ul>
+{% endblock %}

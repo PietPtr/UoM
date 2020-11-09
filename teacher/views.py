@@ -6,6 +6,8 @@ from django.db.models import Max
 from .models import Course, Aim, Action
 from .forms import *
 
+import json
+
 
 def all_courses(request):
     context = {
@@ -38,14 +40,44 @@ def new_course(request):
 
 
 def view_course(request, course_id):
-    context = {}
-    context['course'] = Course.objects.get(pk=course_id)
-    context['aims'] = Aim.objects.filter(course=course_id)
-    context['actions'] = Action.objects.filter(course=course_id).order_by('ordering')
-    context['materials'] = Material.objects.filter(course=course_id)
-    context['study_load'] = sum([action.load for action in context['actions']])
+    context = {
+        'course': get_object_or_404(Course, pk=course_id),
+        'study_load': sum([action.load for action in Action.objects.filter(course=course_id)]),
+        'nav': 'home'
+    }
 
-    return render(request, 'course.html', context)
+    return render(request, 'course/course.html', context)
+
+
+def view_course_aims(request, course_id):
+    context = {
+        'course': get_object_or_404(Course, pk=course_id),
+        'aims': Aim.objects.filter(course=course_id),
+        'nav': 'aims'
+    }
+
+    return render(request, 'course/aims.html', context)
+
+
+def view_course_actions(request, course_id):
+    context = {
+        'course': get_object_or_404(Course, pk=course_id),
+        'actions': Action.objects.filter(course=course_id).order_by('ordering'),
+        'nav': 'actions'
+    }
+
+    return render(request, 'course/actions.html', context)
+
+
+def view_course_materials(request, course_id):
+    context = {
+        'course': get_object_or_404(Course, pk=course_id),
+        'materials': Material.objects.filter(course=course_id),
+        'nav': 'materials'
+    }
+
+    return render(request, 'course/materials.html', context)
+
 
 def edit_course_details(request, course_id):
     course = Course.objects.get(id=course_id)
@@ -63,7 +95,7 @@ def edit_course_details(request, course_id):
             'description': course.description,
             'study_load': course.study_load
         })
-    
+
     context = {
         'form': form,
         'message': 'uwen moeder',
@@ -71,6 +103,7 @@ def edit_course_details(request, course_id):
     }
 
     return render(request, 'new_unit.html', context)
+
 
 def delete_course(request, course_id):
     pass
@@ -137,7 +170,7 @@ def new_action(request, course_id):
                 course=Course.objects.get(id=course_id),
                 load=form.cleaned_data['load'],
                 ordering=Action.objects.filter(course_id=course_id).count())
-            
+
             action.save()
             return view_course(request, course_id)
     else:
@@ -161,6 +194,7 @@ def edit_action(request, action_id):
             action.description = form.cleaned_data['description']
             action.aims.set(form.cleaned_data['aims'])
             action.materials.set(form.cleaned_data['materials'])
+            action.load = form.cleaned_data['load']
             action.save()
         return view_course(request, course_id)
     else:
@@ -188,26 +222,28 @@ def edit_action_order(request, action_id):
         .filter(course_id=course.id) \
         .aggregate(Max('ordering'))['ordering__max']
 
+    print(request)
 
     if request.method == 'POST':
         direction = request.POST['direction']
         if direction == 'up':
             if action.ordering != 0:
-                action_above = Action.objects.get(ordering=(action.ordering - 1))
+                action_above = Action.objects.get(
+                    ordering=(action.ordering - 1))
                 action_above.ordering += 1
                 action.ordering -= 1
                 action.save()
                 action_above.save()
         if direction == 'down':
             if action.ordering != largest:
-                action_below = Action.objects.get(ordering=(action.ordering + 1))
+                action_below = Action.objects.get(
+                    ordering=(action.ordering + 1))
                 action_below.ordering -= 1
                 action.ordering += 1
                 action.save()
                 action_below.save()
 
-    
-    return view_course(request, course.id)
+    return HttpResponse(json.dumps({}), content_type="application/json")
 
 
 def delete_action(request, action_id):

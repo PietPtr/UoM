@@ -16,6 +16,14 @@
     </head>
         
     <body>
+        <script>
+            function addcsrf(dict) {
+
+                dict['csrfmiddlewaretoken'] = "{{ csrf_token }}"
+                return dict;
+            }
+        </script>
+
         {% block navigation %}
         {% endblock %}
 

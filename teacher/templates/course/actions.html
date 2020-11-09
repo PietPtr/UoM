@@ -1,0 +1,33 @@
+{% extends 'course/base.html' %}
+
+{% block course_data %}
+<ul class="list-group list-group-flush" id="action_list">
+        <a href="/teacher/new_action/{{course.id}}" class="list-group-item list-group-item-action">
+            <strong>New action</strong>
+        </a>
+    {% for action in actions %}
+
+        <div class="list-group-item list-group-item-action d-flex justify-content-between hover-elem" onclick="location.href='/teacher/action/{{action.id}}'">
+            {{action.description}}
+            
+            <div class="d-flex">
+                <button type="submit" class="hover-button other-button" onclick="editOrdering('up', {{action.id}});">
+                    <i class="fa fa-arrow-up"></i>
+                </button>
+                
+                <button type="submit" class="hover-button other-button" onclick="editOrdering('down', {{action.id}});">
+                    <i class="fa fa-arrow-down"></i>
+                </button>
+                
+                <form action="{% url 'delete_action' action.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-button hover-button">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    {% endfor %}
+</ul>
+{% endblock %}

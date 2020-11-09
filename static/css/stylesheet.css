@@ -64,7 +64,7 @@ h4 {
 }
 
 .other-button:hover {
-    background-color:  rgb(118, 118, 245);
+    background-color:  rgb(153, 179, 235);
 }
 
 .hover-button:hover {
@@ -72,12 +72,12 @@ h4 {
 
 }
 
-a:hover .hover-button {
+.hover-elem:hover .hover-button {
     visibility: visible;
 }
 
 
-a .hover-button {
+.hover-elem .hover-button {
     visibility: hidden;
     border: none;
     margin: 0;

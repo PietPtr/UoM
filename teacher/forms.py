@@ -38,4 +38,3 @@ class NewActionForm(forms.Form):
 
 class NewMaterialForm(forms.Form):
     file = forms.FileField()
-

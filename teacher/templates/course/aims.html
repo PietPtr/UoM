@@ -1,0 +1,22 @@
+{% extends 'course/base.html' %}
+
+{% block course_data %}
+<ul id="aim_list" class="list-group list-group-flush">
+    <a href="/teacher/new_aim/{{course.id}}" class="list-group-item list-group-item-action">
+        <strong>New aim</strong>
+    </a>
+    {% for aim in aims %}
+        <a href="/teacher/aim/{{aim.id}}" class="list-group-item list-group-item-action hover-elem">
+            <div class="d-flex justify-content-between">
+                {{aim.description}}
+                <form action="{% url 'delete_aim' aim.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="hover-button delete-button">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </a>
+    {% endfor %}
+</ul>
+{% endblock %}
