@@ -16,7 +16,7 @@
 }
 
 .studentnav {
-    background-color: rgb(48, 49, 71);
+    background-color: rgb(31, 40, 58);
 }
 
 /* The navigation menu links */
@@ -34,7 +34,7 @@
 }
 
 .sidenav.studentnav a:hover {
-    background-color: rgb(58, 60, 87);
+    background-color: rgb(50, 65, 94);
 }
 
 /* Style page content */

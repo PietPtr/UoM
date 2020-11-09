@@ -8,7 +8,7 @@ class NewCourseForm(forms.Form):
     description = forms.CharField(
         label='Description',
         widget=forms.Textarea)
-    study_load = forms.IntegerField(label='Study load in hours')
+    published = forms.BooleanField()
 
 
 class NewAimForm(forms.Form):
