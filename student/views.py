@@ -5,6 +5,6 @@ from teacher.models import *
 
 def all_coursess(request):
     context = {
-        'courses': Course.objects.all()
+        'courses': Course.objects.filter(published=True)
     }
     return render(request, 'all_courses.html', context)

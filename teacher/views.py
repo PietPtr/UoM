@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
+from django.db.models import Max
 
 from .models import Course, Aim, Action
 from .forms import *
@@ -18,12 +19,12 @@ def new_course(request):
         form = NewCourseForm(request.POST)
         if form.is_valid():
             course = Course(
-                name=form.cleaned_data['course_name'],
+                name=form.cleaned_data['name'],
                 description=form.cleaned_data['description'],
                 study_load=form.cleaned_data['study_load']
             )
             course.save()
-            return edit_course(request, course.id)
+            return view_course(request, course.id)
     else:
         form = NewCourseForm()
 
@@ -36,15 +37,40 @@ def new_course(request):
     return render(request, 'new_unit.html', context)
 
 
-def edit_course(request, course_id):
+def view_course(request, course_id):
     context = {}
     context['course'] = Course.objects.get(pk=course_id)
     context['aims'] = Aim.objects.filter(course=course_id)
-    context['actions'] = Action.objects.filter(course=course_id)
+    context['actions'] = Action.objects.filter(course=course_id).order_by('ordering')
     context['materials'] = Material.objects.filter(course=course_id)
+    context['study_load'] = sum([action.load for action in context['actions']])
 
     return render(request, 'course.html', context)
 
+def edit_course_details(request, course_id):
+    course = Course.objects.get(id=course_id)
+    if request.method == 'POST':
+        form = NewCourseForm(request.POST)
+        if form.is_valid():
+            course.name = form.cleaned_data['name']
+            course.description = form.cleaned_data['description']
+            course.study_load = form.cleaned_data['study_load']
+            course.save()
+        return view_course(request, course_id)
+    else:
+        form = NewCourseForm(initial={
+            'name': course.name,
+            'description': course.description,
+            'study_load': course.study_load
+        })
+    
+    context = {
+        'form': form,
+        'message': 'uwen moeder',
+        'action_link': '/teacher/course/%s/details' % course.id
+    }
+
+    return render(request, 'new_unit.html', context)
 
 def delete_course(request, course_id):
     pass
@@ -58,7 +84,7 @@ def new_aim(request, course_id):
                 description=form.cleaned_data['description'],
                 course=Course.objects.get(id=course_id))
             aim.save()
-        return edit_course(request, course_id)
+        return view_course(request, course_id)
     else:
         form = NewAimForm()
 
@@ -78,7 +104,7 @@ def edit_aim(request, aim_id):
         if form.is_valid():
             aim.description = form.cleaned_data['description']
             aim.save()
-        return edit_course(request, aim.course.id)
+        return view_course(request, aim.course.id)
     else:
         form = NewAimForm(initial={
             'description': aim.description
@@ -99,7 +125,7 @@ def delete_aim(request, aim_id):
     if request.method == 'POST':
         aim.delete()
 
-    return edit_course(request, aim.course.id)
+    return view_course(request, aim.course.id)
 
 
 def new_action(request, course_id):
@@ -108,10 +134,12 @@ def new_action(request, course_id):
         if form.is_valid():
             action = Action(
                 description=form.cleaned_data['description'],
-                course=Course.objects.get(id=course_id))
-            # TODO: file connectie
+                course=Course.objects.get(id=course_id),
+                load=form.cleaned_data['load'],
+                ordering=Action.objects.filter(course_id=course_id).count())
+            
             action.save()
-            return edit_course(request, course_id)
+            return view_course(request, course_id)
     else:
         form = NewActionForm(course_id=course_id)
 
@@ -125,15 +153,16 @@ def new_action(request, course_id):
 
 
 def edit_action(request, action_id):
-    action = Action.objects.get(id=action_id)
+    action = get_object_or_404(Action, pk=action_id)
     course_id = action.course.id
     if request.method == 'POST':
         form = NewActionForm(request.POST, course_id=course_id)
         if form.is_valid():
             action.description = form.cleaned_data['description']
             action.aims.set(form.cleaned_data['aims'])
+            action.materials.set(form.cleaned_data['materials'])
             action.save()
-        return edit_course(request, course_id)
+        return view_course(request, course_id)
     else:
         print(action.aims.all())
         form = NewActionForm(initial={
@@ -151,13 +180,43 @@ def edit_action(request, action_id):
     return render(request, 'new_unit.html', context)
 
 
+def edit_action_order(request, action_id):
+    action = get_object_or_404(Action, pk=action_id)
+    course = get_object_or_404(Course, pk=action.course_id)
+
+    largest = Action.objects \
+        .filter(course_id=course.id) \
+        .aggregate(Max('ordering'))['ordering__max']
+
+
+    if request.method == 'POST':
+        direction = request.POST['direction']
+        if direction == 'up':
+            if action.ordering != 0:
+                action_above = Action.objects.get(ordering=(action.ordering - 1))
+                action_above.ordering += 1
+                action.ordering -= 1
+                action.save()
+                action_above.save()
+        if direction == 'down':
+            if action.ordering != largest:
+                action_below = Action.objects.get(ordering=(action.ordering + 1))
+                action_below.ordering -= 1
+                action.ordering += 1
+                action.save()
+                action_below.save()
+
+    
+    return view_course(request, course.id)
+
+
 def delete_action(request, action_id):
     action = get_object_or_404(Action, pk=action_id)
 
     if request.method == 'POST':
         action.delete()
 
-    return edit_course(request, action.course.id)
+    return view_course(request, action.course.id)
 
 
 def new_material(request, course_id):
@@ -169,7 +228,7 @@ def new_material(request, course_id):
                 file=request.FILES['file'],
                 course=Course.objects.get(id=course_id))
             material.save()
-            return edit_course(request, course_id)
+            return view_course(request, course_id)
     else:
         form = NewMaterialForm()
 
@@ -188,4 +247,4 @@ def delete_material(request, material_id):
     if request.method == 'POST':
         material.delete()
 
-    return edit_course(request, material.course.id)
+    return view_course(request, material.course.id)

@@ -16,7 +16,7 @@
 }
 
 .studentnav {
-    background-color: rgb(53, 54, 87);
+    background-color: rgb(48, 49, 71);
 }
 
 /* The navigation menu links */
@@ -34,7 +34,7 @@
 }
 
 .sidenav.studentnav a:hover {
-    background-color: rgb(80, 82, 131);
+    background-color: rgb(58, 60, 87);
 }
 
 /* Style page content */
@@ -59,17 +59,39 @@ h4 {
 }
 
 
-.delete_button:hover {
+.delete-button:hover {
     background-color: rgb(245, 118, 118);
+}
+
+.other-button:hover {
+    background-color:  rgb(118, 118, 245);
+}
+
+.hover-button:hover {
+    visibility: visible;
+
+}
+
+a:hover .hover-button {
     visibility: visible;
 }
 
-a:hover .delete_button {
-    visibility: visible;
-}
 
-
-a .delete_button {
+a .hover-button {
     visibility: hidden;
     border: none;
+    margin: 0;
+    border-radius: 5px;
+}
+
+
+
+.course-edit {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+}
+
+.course-description {
+    max-width: 1200px;
 }

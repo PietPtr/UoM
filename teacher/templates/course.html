@@ -1,11 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'teacher.html' %}
 
 {% block content %}
 
 
     <h1>{{ course.name }}</h1>
+    <a href="details" class="btn btn-secondary btn-lg course-edit">
+        <i class="fa fa-edit"></i> Edit course
+    </a>
 
-    <p>{{course.description}}</p>
+    <p>Study load: {{study_load}} hours.</p>
+
+    <div class="course-description">
+        <p>{{course.description|linebreaks}}</p>
+    </div>
 
     <h4 class="navbar" id="aim_header">Aims</h4>
 
@@ -19,7 +26,9 @@
                 {{aim.description}}
                 <form action="{% url 'delete_aim' aim.id %}" method="post">
                     {% csrf_token %}
-                    <input type="submit" value="x" class="delete_button">
+                    <button type="submit" class="hover-button delete-button">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </form>
             </div>
         </a>
@@ -35,10 +44,31 @@
         <a href="/teacher/action/{{action.id}}" class="list-group-item list-group-item-action">
             <div class="d-flex justify-content-between">
                 {{action.description}}
-                <form action="{% url 'delete_action' action.id %}" method="post">
-                    {% csrf_token %}
-                    <input type="submit" value="x" class="delete_button">
-                </form>
+                <div class="d-flex">
+                    <!-- TODO: dit is kut met forms, gebruik javascript? -->
+                    <form action="{% url 'edit_action_order' action.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="direction" value="up">
+                        <button type="submit" class="hover-button other-button">
+                            <i class="fa fa-arrow-up"></i>
+                        </button>
+                    </form>
+
+                    <form action="{% url 'edit_action_order' action.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="direction" value="down">
+                        <button type="submit" class="hover-button other-button">
+                            <i class="fa fa-arrow-down"></i>
+                        </button>
+                    </form>
+
+                    <form action="{% url 'delete_action' action.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button hover-button">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </a>
     {% endfor %}
@@ -55,7 +85,9 @@
                 {{material.file.name}}
                 <form action="{% url 'delete_material' material.id %}" method="post">
                     {% csrf_token %}
-                    <input type="submit" value="x" class="delete_button">
+                    <button type="submit" class="hover-button delete-button">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </form>
             </div>
         </a>

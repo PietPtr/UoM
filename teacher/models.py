@@ -4,7 +4,6 @@ from django.db import models
 class Course(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
-    study_load = models.IntegerField()
     published = models.BooleanField(default=False)
 
     def __str__(self):
@@ -33,8 +32,10 @@ class Material(models.Model):
 class Action(models.Model):
     description = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    aims = models.ManyToManyField(Aim)
-    materials = models.ManyToManyField(Material)
+    aims = models.ManyToManyField(Aim, blank=True)
+    materials = models.ManyToManyField(Material, blank=True)
+    load = models.IntegerField()
+    ordering = models.IntegerField()
 
     def __str__(self):
         return self.description
