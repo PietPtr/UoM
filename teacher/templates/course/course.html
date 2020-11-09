@@ -1,9 +1,10 @@
 {% extends 'course/base.html' %}
 
 {% block course_data %}
-<p>Study load: {{study_load}} hours.</p>
+<p>Study load: {{course.study_load}} hours.</p>
 
 <div class="course-description">
     <p>{{course.description|linebreaks}}</p>
 </div>
+
 {% endblock %}

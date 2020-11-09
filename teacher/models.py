@@ -9,6 +9,20 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
+    def study_load(self):
+        return Action.objects.filter(course_id=self.id).aggregate(models.Sum('load'))['load__sum']
+
+    def weeks(self):
+        return Week.objects.filter(course_id=self.id).aggregate(models.Max('number'))['number__max']
+
+
+class Week(models.Model):
+    number = models.IntegerField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "'%s' week %s" % (self.course, self.number)
+
 
 class Aim(models.Model):
     description = models.TextField()
@@ -35,6 +49,19 @@ class Action(models.Model):
     materials = models.ManyToManyField(Material, blank=True)
     load = models.IntegerField()
     ordering = models.IntegerField()
+    week = models.ForeignKey(Week, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.description
+
+    @classmethod
+    def create(cls, description, course, week, load):
+        ordering = Action.objects.all().count()
+        action = cls(description=description,
+                     course=course, load=load, week=week, ordering=ordering)
+        return action
+
+    def clean(self):
+        if self.course.id != self.week.course.id:
+            raise ValidationError(
+                'Action week does not belong to action course')

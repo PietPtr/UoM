@@ -20,12 +20,15 @@ def new_course(request):
     if request.method == 'POST':
         form = NewCourseForm(request.POST)
         if form.is_valid():
+
             course = Course(
                 name=form.cleaned_data['name'],
                 description=form.cleaned_data['description'],
                 published=form.cleaned_data['published']
             )
+
             course.save()
+
             return view_course(request, course.id)
     else:
         form = NewCourseForm()
@@ -40,9 +43,9 @@ def new_course(request):
 
 
 def view_course(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
     context = {
-        'course': get_object_or_404(Course, pk=course_id),
-        'study_load': sum([action.load for action in Action.objects.filter(course=course_id)]),
+        'course': course,
         'nav': 'home'
     }
 
@@ -60,9 +63,36 @@ def view_course_aims(request, course_id):
 
 
 def view_course_actions(request, course_id):
+    weeks = Week.objects.filter(course=course_id).order_by('number')
+
+    rows = []
+
+    for week in weeks:
+
+        row = {
+            'type': 'week',
+            'description': 'Week %s' % week.number,
+            'id': week.id
+        }
+
+        rows.append(row)
+
+        actions = Action.objects.filter(
+            week=week.id, course=course_id).order_by('ordering')
+
+        for action in actions:
+            row = {
+                'type': 'action',
+                'description': action.description,
+                'load': action.load,
+                'id': action.id
+            }
+            rows.append(row)
+
     context = {
         'course': get_object_or_404(Course, pk=course_id),
         'actions': Action.objects.filter(course=course_id).order_by('ordering'),
+        'rows': rows,
         'nav': 'actions'
     }
 

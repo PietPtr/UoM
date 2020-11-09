@@ -24,10 +24,13 @@ urlpatterns = [
          views.new_material, name="new_material"),
     path('new_course/', views.new_course, name='new_course'),
 
+    path('add_week/<int:course_id>/', views.add_week, name='add_week'),
+
     path('', views.all_courses, name='my_courses'),
     path('delete_aim/<int:aim_id>/', views.delete_aim, name='delete_aim'),
     path('delete_action/<int:action_id>/',
          views.delete_action, name='delete_action'),
     path('delete_material/<int:material_id>/',
-         views.delete_material, name='delete_material')
+         views.delete_material, name='delete_material'),
+    path('delete_week/<int:week_id>/', views.delete_week, name='delete_week')
 ]

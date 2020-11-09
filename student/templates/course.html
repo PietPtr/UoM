@@ -1,5 +1,31 @@
-{% extends "base.html" %}
+{% extends 'student.html' %}
 
 {% block content %}
-iets
+
+    <h1>{{ course.name }}</h1>
+
+    <a href="enroll" class="btn btn-secondary btn-lg course-edit">
+        <i class="fa fa-pencil"></i> Enroll
+    </a>
+
+
+    <h4>Course description</h4>
+
+    <div class="course-description">
+        <p>{{course.description|linebreaks}}</p>
+    </div>
+
+    <h4>Aims</h4>
+
+    <ul>
+    {% for aim in aims %}
+        <li>
+            {{aim.description}}
+        </li>
+    {% endfor %}
+    </ul>
+    
+    <h4>Study load</h4>
+    <p>{{course.study_load}} hours in {{course.weeks}} weeks.</p>
+
 {% endblock %}

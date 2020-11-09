@@ -8,7 +8,7 @@
         <i class="fa fa-edit"></i> Edit course
     </a>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs mb-2">
         <li class="nav-item">
             <a class="nav-link {% if nav == 'home' %}active{% endif %}" 
                 href="/teacher/course/{{course.id}}">
@@ -40,29 +40,5 @@
 
     {% endblock %}
 
-
-    <script>
-    
-    function editOrdering(direction, actionId) {
-        console.log(direction);
-
-        $.ajax({
-            url: "/teacher/action/" + actionId + "/ordering/",
-            type: "POST",
-            data: addcsrf({ direction }),
-            success: (result) => {
-               location.reload();
-            },
-            error: (result) => {
-                console.error(result);
-            }
-        }).fail((xhr, text, error) => {
-            console.error(xhr, text, error);
-        })
-
-        event.stopPropagation(); 
-    }
-    
-    </script>
 
 {% endblock %}

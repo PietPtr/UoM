@@ -3,12 +3,14 @@ from django import forms
 from .models import *
 
 
+# TODO: deze forms zijn niet alleen voor nieuwe maar ook voor edits, fix namen
+
 class NewCourseForm(forms.Form):
     name = forms.CharField(label='Course name', max_length=256)
     description = forms.CharField(
         label='Description',
         widget=forms.Textarea)
-    published = forms.BooleanField()
+    published = forms.BooleanField(required=False)
 
 
 class NewAimForm(forms.Form):
