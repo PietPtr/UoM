@@ -10,7 +10,9 @@ class Course(models.Model):
         return self.name
 
     def study_load(self):
-        return Action.objects.filter(course_id=self.id).aggregate(models.Sum('load'))['load__sum']
+        load = Action.objects.filter(course_id=self.id).aggregate(
+            models.Sum('load'))['load__sum']
+        return 0 if load == None else load
 
     def weeks(self):
         return Week.objects.filter(course_id=self.id).aggregate(models.Max('number'))['number__max']

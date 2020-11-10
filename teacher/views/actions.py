@@ -7,6 +7,7 @@ from teacher.models import Course, Aim, Action
 from teacher.forms import *
 
 import json
+from pprint import pprint
 
 
 def new_action(request, course_id):
@@ -79,49 +80,77 @@ def switch_actions(a1, a2):
     a2.save()
 
 
+def move_action_in_weeks(action, direction):
+    mod = 0
+    if direction == 'next':
+        mod = 1
+    elif direction == 'previous':
+        mod = -1
+
+    to_week = Week.objects.filter(
+        course_id=action.course.id, number=(action.week.number + mod)).first()
+
+    action.week = to_week
+    action.save()
+
+
 def edit_action_order(request, action_id):
     action = get_object_or_404(Action, pk=action_id)
     course = get_object_or_404(Course, pk=action.course_id)
 
-    largest = Action.objects \
+    max_action_ordering = Action.objects \
         .filter(course_id=course.id) \
         .aggregate(Max('ordering'))['ordering__max']
 
-    if request.method == 'POST':
+    max_week_number = Week.objects \
+        .filter(course_id=course.id) \
+        .aggregate(Max('number'))['number__max']
+
+    max_ordering_in_week = Action.objects \
+        .filter(course_id=course.id, week_id=action.week.id) \
+        .aggregate(Max('ordering'))['ordering__max']
+
+    min_ordering_in_week = Action.objects \
+        .filter(course_id=course.id, week_id=action.week.id) \
+        .aggregate(Min('ordering'))['ordering__min']
+
+    next_action = Action.objects.filter(
+        course_id=course.id, ordering=(action.ordering+1)).first()
+    previous_action = Action.objects.filter(
+        course_id=course.id, ordering=(action.ordering-1)).first()
+
+    if (request.method == 'POST'):
         direction = request.POST['direction']
-        if direction == 'up':
-
-            if action.ordering != 0:
-                smallest_in_week = Action.objects.filter(
-                    week=action.week.id).aggregate(Min('ordering'))['ordering__min']
-
-                if action.ordering != smallest_in_week:
-                    action_above = Action.objects.get(
-                        course_id=course.id,
-                        ordering=(action.ordering - 1))
-
-                    switch_actions(action_above, action)
-                else:
-                    previous_week = get_object_or_404(
-                        Week, course=course.id, number=(action.week.number - 1))
-                    action.week = previous_week
-                    action.save()
-
         if direction == 'down':
-            largest_in_week = Action.objects.filter(
-                week=action.week.id).aggregate(Max('ordering'))['ordering__max']
+            if action.ordering == max_action_ordering:
+                if action.week.number == max_week_number:
+                    pass
+                else:
+                    # move action to next week
+                    move_action_in_weeks(action, 'next')
+            else:
+                if action.ordering == max_ordering_in_week:
+                    # move action to next week
+                    move_action_in_weeks(action, 'next')
+                else:
+                    # swap with next action
+                    switch_actions(action, next_action)
+        elif direction == 'up':
+            if action.ordering == 0:
+                if action.week.number == 1:
+                    pass
+                else:
+                    # move action to previous week
+                    move_action_in_weeks(action, 'previous')
+            else:
+                if action.ordering == min_ordering_in_week:
+                    # mave action to previous week
+                    move_action_in_weeks(action, 'previous')
+                else:
+                    # swap with previous action
+                    switch_actions(previous_action, action)
 
-            if action.ordering != largest_in_week:
-                action_below = Action.objects.get(
-                    course_id=course.id,
-                    ordering=(action.ordering + 1))
-
-                switch_actions(action, action_below)
-            elif action.week.number != action.course.weeks:
-                next_week = get_object_or_404(Week,
-                                              course=course.id, number=(action.week.number + 1))
-                action.week = next_week
-                action.save()
+    action.save()
 
     return HttpResponse(json.dumps({}), content_type="application/json")
 
@@ -150,16 +179,16 @@ def add_week(request, course_id):
 
 def delete_week(request, week_id):
     week = get_object_or_404(Week, pk=week_id)
+    course = get_object_or_404(Course, pk=week.course.id)
 
     if request.method == 'POST':
-        week.delete()
+        if week.number > 1:  # cannot remove the first week, which should always be the last week left
+            week.delete()
 
-    later_weeks = Week.objects.filter(number__gt=week.number)
+            later_weeks = Week.objects.filter(number__gt=week.number)
 
-    print(later_weeks)
+            for week in later_weeks:
+                week.number -= 1
+                week.save()
 
-    for week in later_weeks:
-        week.number -= 1
-        week.save()
-
-    return redirect('/teacher/course/%s/actions' % week.course.id)
+    return redirect('/teacher/course/%s/actions' % course.id)

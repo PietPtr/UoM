@@ -29,6 +29,9 @@ def new_course(request):
 
             course.save()
 
+            week = Week(number=1, course=course)
+            week.save()
+
             return view_course(request, course.id)
     else:
         form = NewCourseForm()
@@ -85,7 +88,8 @@ def view_course_actions(request, course_id):
                 'type': 'action',
                 'description': action.description,
                 'load': action.load,
-                'id': action.id
+                'id': action.id,
+                'ordering': action.ordering
             }
             rows.append(row)
 
