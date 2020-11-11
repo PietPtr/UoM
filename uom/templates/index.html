@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block navigation %}
+<div class="sidenav accountsnav">
+    <a href="/">UoM</a>
+
+    <div class="modeswitcher">
+    {% if user.is_authenticated %}
+        <a href="/student/">Student</a>
+        <a href="/student/">Teacher</a>
+        <a href="/accounts/logout">Log out</a>
+    {% else %}
+        <a href="/accounts/login">Log in</a>
+    {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block content %}
+    hoi.
+
+{% endblock %}

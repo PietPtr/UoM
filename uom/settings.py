@@ -32,15 +32,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'uom',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'uom',
     'teacher',
-    'student'
+    'student',
+    'django.contrib.admin',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +123,6 @@ MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
 FILE_UPLOAD_PERMISSIONS = 0o644
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/student/'  # TODO: should go to my-courses

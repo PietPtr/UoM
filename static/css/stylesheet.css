@@ -20,6 +20,10 @@
     background-color: rgb(31, 40, 58);
 }
 
+.accountsnav {
+    background-color: rgb(87, 53, 54);
+}
+
 /* The navigation menu links */
 .sidenav a {
     padding: 6px 8px 6px 16px;
@@ -36,6 +40,10 @@
 
 .sidenav.studentnav a:hover {
     background-color: rgb(50, 65, 94);
+}
+
+.sidenav.accountsnav a:hover {
+    background-color: rgb(117, 69, 71);
 }
 
 /* Style page content */
