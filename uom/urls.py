@@ -19,13 +19,15 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
+from decorator_include import decorator_include
 
 from .views import *
 
 urlpatterns = [
     path('', index, name="index"),
-    path('student/', include('student.urls')),
-    path('teacher/', include('teacher.urls')),
+    path('student/', decorator_include(login_required, include('student.urls'))),
+    path('teacher/', decorator_include(login_required, include('teacher.urls'))),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('admin/', admin.site.urls)
