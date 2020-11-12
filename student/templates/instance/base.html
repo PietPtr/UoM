@@ -1,36 +1,37 @@
 {% extends 'student.html' %}
 
 {% block content %}
+    <div class="sticky-top bg-white pt-2">
+        <h1>{{ instance.course.name }}</h1>
 
-    <h1>{{ instance.course.name }}</h1>
 
-
-    <ul class="nav nav-tabs mb-2">
-        <li class="nav-item">
-            <a class="nav-link {% if nav == 'home' %}active{% endif %}" 
-                href="/student/course_instance/{{instance.id}}">
-                    Home
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if nav == 'aims' %}active{% endif %}" 
-                href="/student/course_instance/{{instance.id}}/aims">
-                    Aims
+        <ul class="nav nav-tabs mb-2">
+            <li class="nav-item">
+                <a class="nav-link {% if nav == 'home' %}active{% endif %}" 
+                    href="/student/course_instance/{{instance.id}}">
+                        Home
                 </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if nav == 'actions' %}active{% endif %}" 
-                href="/student/course_instance/{{instance.id}}/actions">
-                    Actions
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if nav == 'materials' %}active{% endif %}" 
-                href="/student/course_instance/{{instance.id}}/materials">
-                    Materials
-            </a>
-        </li>
-    </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if nav == 'aims' %}active{% endif %}" 
+                    href="/student/course_instance/{{instance.id}}/aims">
+                        Aims
+                    </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if nav == 'actions' %}active{% endif %}" 
+                    href="/student/course_instance/{{instance.id}}/actions">
+                        Actions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if nav == 'materials' %}active{% endif %}" 
+                    href="/student/course_instance/{{instance.id}}/materials">
+                        Materials
+                </a>
+            </li>
+        </ul>
+    </div>
 
 
     {% block instance_data %}

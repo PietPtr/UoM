@@ -31,7 +31,7 @@ class Aim(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "%s: %s" % (self.course, self.description)
+        return self.description
 
 
 class Material(models.Model):
@@ -58,7 +58,7 @@ class Action(models.Model):
 
     @classmethod
     def create(cls, description, course, week, load):
-        ordering = Action.objects.all().count()
+        ordering = Action.objects.filter(course=course.id).count()
         action = cls(description=description,
                      course=course, load=load, week=week, ordering=ordering)
         return action

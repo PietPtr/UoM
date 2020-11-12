@@ -1,9 +1,22 @@
 {% extends 'course/base.html' %}
 
+
+{% block sticky_top %}
+    <div class="pb-2">
+        <a href="/teacher/new_action/{{course.id}}/" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Action
+        </a>
+
+        <a onclick="addWeek({{course.id}})" class="btn btn-primary text-white">
+            <i class="fa fa-plus"></i> Week
+        </a>
+    </div>
+
+    </hr>
+{% endblock %}
+
+
 {% block course_data %}
-
-
-
 <table class="table table-hover">
     <thead>
         <tr>
@@ -13,11 +26,6 @@
         </tr>
     </thead>
     <tbody>
-        <tr onclick="location.href='/teacher/new_action/{{course.id}}'">
-            <td>
-                <strong>New action</strong>
-            </td>
-        </tr>
         {% for row in rows %}
         <tr class="hover-elem" {% if row.type == 'action' %}onclick="location.href='/teacher/action/{{row.id}}'"{% endif %}>
             {% if row.type == 'week' %}
@@ -41,9 +49,9 @@
                     {% endif %}
                     
                     {% if row.type == 'action' %}
-                    <form action="{% url 'delete_action' row.id %}" method="post">
+                    <form action="{% url 'delete_action' row.id %}" method="post" onsubmit="saveScroll();">
                     {% else %}
-                    <form action="{% url 'delete_week' row.id %}" method="post">
+                    <form action="{% url 'delete_week' row.id %}" method="post" onsubmit="saveScroll();">
                     {% endif %}
                         {% csrf_token %}
                         <button type="submit" class="delete-button hover-button">
@@ -54,22 +62,18 @@
             </td>
         </tr>
         {% endfor %}
-        <tr onclick="addWeek({{course.id}})">
-            <td>
-                <div class="btn btn-link" >Add week</div>
-            </td>
-        </tr>
     </tbody>
 
     <script>
     
     function editOrdering(direction, actionId) {
+        saveScroll();
         $.ajax({
             url: "/teacher/action/" + actionId + "/ordering/",
             type: "POST",
             data: addcsrf({ direction }),
             success: (result) => {
-               location.reload();
+               document.location.reload(true);
             },
             error: (result) => {
                 console.error(result);
@@ -82,22 +86,29 @@
     }
     
     function addWeek(courseId) {
+        saveScroll();
         $.ajax({
             url: "/teacher/add_week/" + courseId + "/",
             type: "POST",
             data: addcsrf({ }),
             success: (result) => {
-                location.reload();
                 console.log(result);
+                document.location.reload(true);
             },
             error: (result) => {
                 console.error(result);
             }
 
+        }).fail((xhr, text, error) => {
+            console.error(xhr, text, error);
         });
 
         event.stopPropagation(); 
     }
+
+    $(document).ready(() => {
+        restoreScroll();
+    })
 
     </script>
 </table>

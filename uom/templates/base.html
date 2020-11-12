@@ -22,6 +22,19 @@
                 dict['csrfmiddlewaretoken'] = "{{ csrf_token }}"
                 return dict;
             }
+
+            function saveScroll() {
+                let pos = $(window).scrollTop();
+                console.log(pos);
+                localStorage.setItem('my-scroll-pos', pos);
+            }
+
+            function restoreScroll() {
+                var pos = localStorage.getItem('my-scroll-pos', 0);
+                console.log('pos', pos);
+                if (pos)
+                    $(window).scrollTop(pos);
+            }
         </script>
 
         {% block navigation %}

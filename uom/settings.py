@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost'] + SECRET_ALLOWED_HOSTS
 
 
 # Application definition
@@ -125,4 +125,4 @@ MEDIA_URL = '/media/'
 FILE_UPLOAD_PERMISSIONS = 0o644
 
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/student/'  # TODO: should go to my-courses
+LOGIN_REDIRECT_URL = '/student/course_instance/'

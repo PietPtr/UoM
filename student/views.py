@@ -40,12 +40,12 @@ def confirm_enrolment(request, course_id):
 
     course_instance.save()
 
-    return redirect('/course_instance/%s/' % course_id)
+    return redirect('/student/course_instance/%s/' % course_instance.id)
 
 
 def course_instances(request):
     context = {
-        'instances': CourseInstance.objects.filter(student=request.user.student)
+        'instances': CourseInstance.objects.filter(student=request.user.student).order_by('-started')
     }
 
     return render(request, 'course_instances.html', context)
@@ -88,7 +88,7 @@ def view_instance_actions(request, instance_id):
             'type': 'week',
             'description': 'Week %s' % week.number,
             'id': week.id,
-            'green': all(action in completed_actions for action in actions)
+            'green': all(action in completed_actions for action in actions) and len(actions) != 0
         }
 
         rows.append(row)

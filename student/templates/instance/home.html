@@ -1,8 +1,12 @@
 {% extends 'instance/base.html' %}
 
 {% block instance_data %}
+<p>Started on {{instance.started}}.</p>
 
-hoi
+<p>Study load: {{instance.course.study_load}} hours.</p>
 
+<div class="course-description">
+    <p>{{instance.course.description|linebreaks}}</p>
+</div>
 
 {% endblock %}
