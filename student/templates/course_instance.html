@@ -1,0 +1,14 @@
+{% extends 'student.html' %}
+
+{% block content %}
+    <h1 class="">Enrolled courses</h1>
+
+    <div class="list-group-flush">
+    {% for course in courses %}
+        <a href="{{course.id}}" class="list-group-item list-group-item-action">
+            {{course.course.name}} ({{course.started}})
+        </a>
+    {% endfor %}
+    </div>
+
+{% endblock %}

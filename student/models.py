@@ -6,17 +6,25 @@ from django.dispatch import receiver
 from teacher.models import *
 
 
-class CourseInstance(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    completed_actions = models.ManyToManyField(Action)
-
-
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    enrolled_courses = models.ManyToManyField(CourseInstance, blank=True)
 
     def __str__(self):
         return 'Student %s' % self.user.username
+
+
+class CourseInstance(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    completed_actions = models.ManyToManyField(Action)
+    started = models.DateField(auto_now=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '\'%s\' %s-%s (%s)' % \
+            (self.course.name,
+             self.started.month,
+             self.started.year,
+             self.student.user.username)
 
 
 @receiver(post_save, sender=User)

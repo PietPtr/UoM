@@ -1,8 +1,7 @@
 {% extends 'student.html' %}
 
 {% block content %}
-{% comment %} TODO: enrollment button {% endcomment %}
-
+    <h1 class="">Courses</h1>
     <div class="list-group-flush">
     {% for course in courses %}
         <a href="course/{{course.id}}" class="list-group-item list-group-item-action">
