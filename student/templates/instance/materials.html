@@ -1,0 +1,11 @@
+{% extends 'instance/base.html' %}
+
+{% block instance_data %}
+<ul class="list-group list-group-flush" id="materials_list">
+    {% for material in materials %}
+        <a href="{{ material.file.url }}" class="list-group-item list-group-item-action hover-elem">
+            {{material.file.name}}
+        </a>    
+    {% endfor %}
+</ul>
+{% endblock %}

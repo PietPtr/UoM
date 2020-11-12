@@ -45,7 +45,82 @@ def confirm_enrolment(request, course_id):
 
 def course_instances(request):
     context = {
-        'courses': CourseInstance.objects.filter(student=request.user.student)
+        'instances': CourseInstance.objects.filter(student=request.user.student)
     }
 
-    return render(request, 'course_instance.html', context)
+    return render(request, 'course_instances.html', context)
+
+
+def view_instance(request, instance_id):
+    context = {
+        'instance': get_object_or_404(CourseInstance, pk=instance_id),
+        'nav': 'home'
+    }
+
+    return render(request, 'instance/home.html', context)
+
+
+def view_instance_aims(request, instance_id):
+    instance = get_object_or_404(CourseInstance, pk=instance_id)
+    context = {
+        'instance': instance,
+        'aims': Aim.objects.filter(course=instance.course.id),
+        'nav': 'aims'
+    }
+
+    return render(request, 'instance/aims.html', context)
+
+
+def view_instance_actions(request, instance_id):
+    instance = get_object_or_404(CourseInstance, pk=instance_id)
+    course = instance.course
+    weeks = Week.objects.filter(course=course.id).order_by('number')
+
+    completed_actions = instance.completed_actions.all()
+
+    rows = []
+
+    for week in weeks:
+        actions = Action.objects.filter(
+            week=week.id, course=course.id).order_by('ordering')
+
+        row = {
+            'type': 'week',
+            'description': 'Week %s' % week.number,
+            'id': week.id,
+            'green': all(action in completed_actions for action in actions)
+        }
+
+        rows.append(row)
+
+        for action in actions:
+            row = {
+                'type': 'action',
+                'description': action.description,
+                'load': action.load,
+                'id': action.id,
+                'ordering': action.ordering,
+                'green': action in completed_actions
+            }
+            rows.append(row)
+
+    context = {
+        'instance': get_object_or_404(CourseInstance, pk=instance_id),
+        'actions': Action.objects.filter(course=course.id).order_by('ordering'),
+        'rows': rows,
+        'nav': 'actions'
+    }
+
+    return render(request, 'instance/actions.html', context)
+
+
+def view_instance_materials(request, instance_id):
+    instance = get_object_or_404(CourseInstance, pk=instance_id)
+    course = instance.course
+    context = {
+        'instance': instance,
+        'materials': Material.objects.filter(course=course.id),
+        'nav': 'materials'
+    }
+
+    return render(request, 'instance/materials.html', context)

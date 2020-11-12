@@ -1,0 +1,45 @@
+{% extends 'instance/base.html' %}
+
+{% block instance_data %}
+
+
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Study action</th>
+            <th scope="col">Load</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr class="hover-elem {% if row.green %}table-success{% endif %}" {% if row.type == 'action' %}onclick="location.href='/student/course_instance/{{instance.id}}/action/{{row.id}}'"{% endif %}>
+            {% if row.type == 'week' %}
+            <td><strong>{{row.description}}</strong></td>
+            <td></td>
+            {% else %}
+            <td>{{row.description}}</td>
+            <td>{{row.load}} hrs</td>
+            {% endif %}
+            <td>
+            {% comment %} TODO: add hover buttons for setting action done/not done {% endcomment %}
+                {% comment %} <form action="{% url 'delete_action' row.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-button hover-button">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </form> {% endcomment %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <script>
+    </script>
+</table>
+
+
+
+
+{% endblock %}

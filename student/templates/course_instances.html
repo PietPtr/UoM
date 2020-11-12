@@ -4,9 +4,9 @@
     <h1 class="">Enrolled courses</h1>
 
     <div class="list-group-flush">
-    {% for course in courses %}
-        <a href="{{course.id}}" class="list-group-item list-group-item-action">
-            {{course.course.name}} ({{course.started}})
+    {% for instance in instances %}
+        <a href="{{instance.id}}" class="list-group-item list-group-item-action">
+            {{instance.course.name}} ({{instance.started}})
         </a>
     {% endfor %}
     </div>
