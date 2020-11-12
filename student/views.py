@@ -17,3 +17,11 @@ def view_course(request, course_id):
     }
 
     return render(request, 'course.html', context)
+
+
+def enroll_in_course(request, course_id):
+    context = {
+        'course': get_object_or_404(Course, pk=course_id)
+    }
+
+    return render(request, 'enroll.html', context)
