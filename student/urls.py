@@ -19,5 +19,12 @@ urlpatterns = [
     path('course_instance/<int:instance_id>/actions/',
          views.view_instance_actions, name='view_instance_actions'),
 
+    path('course_instance/<int:instance_id>/action/<int:action_id>',
+         views.view_action, name='view_action'),
+    path('course_instance/<int:instance_id>/action/<int:action_id>/complete',
+         views.complete_action, name='complete_action'),
+    path('course_instance/<int:instance_id>/action/<int:action_id>/undo_complete',
+         views.undo_complete_action, name='undo_complete_action'),
+
     path('', views.all_courses, name='all_courses'),
 ]

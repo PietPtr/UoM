@@ -124,3 +124,36 @@ def view_instance_materials(request, instance_id):
     }
 
     return render(request, 'instance/materials.html', context)
+
+
+def view_action(request, instance_id, action_id):
+    instance = get_object_or_404(CourseInstance, pk=instance_id)
+    action = get_object_or_404(Action, pk=action_id)
+    materials = action.materials.all()
+
+    context = {
+        'instance': instance,
+        'action': action,
+        'materials': materials,
+        'completed': instance.completed_actions.filter(pk=action.id).first()
+    }
+
+    return render(request, 'instance/action.html', context)
+
+
+def complete_action(request, instance_id, action_id):
+    instance = get_object_or_404(CourseInstance, pk=instance_id)
+    action = get_object_or_404(Action, pk=action_id)
+
+    instance.completed_actions.add(action)
+
+    return view_instance_actions(request, instance_id)
+
+
+def undo_complete_action(request, instance_id, action_id):
+    instance = get_object_or_404(CourseInstance, pk=instance_id)
+    action = get_object_or_404(Action, pk=action_id)
+
+    instance.completed_actions.remove(action)
+
+    return view_instance_actions(request, instance_id)
