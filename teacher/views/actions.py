@@ -21,6 +21,7 @@ def new_action(request, course_id):
                 description=form.cleaned_data['description'],
                 course=Course.objects.get(id=course_id),
                 load=form.cleaned_data['load'],
+                splittable=form.cleaned_data['splittable'],
                 week=last_week)
 
             action.save()
@@ -53,6 +54,7 @@ def edit_action(request, action_id):
             action.aims.set(form.cleaned_data['aims'])
             action.materials.set(form.cleaned_data['materials'])
             action.load = form.cleaned_data['load']
+            action.splittable = form.cleaned_data['splittable']
             action.save()
         return redirect('/teacher/course/%s/actions' % course_id)
     else:
@@ -61,7 +63,8 @@ def edit_action(request, action_id):
             'description': action.description,
             'aims': action.aims.all(),
             'materials': action.materials.all(),
-            'load': action.load
+            'load': action.load,
+            'splittable': action.splittable
         }, course_id=course_id)
 
     context = {

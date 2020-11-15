@@ -22,15 +22,6 @@
             <td>{{row.description}}</td>
             <td>{{row.load}} hrs</td>
             {% endif %}
-            <td>
-            {% comment %} TODO: add hover buttons for setting action done/not done {% endcomment %}
-                {% comment %} <form action="{% url 'delete_action' row.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="delete-button hover-button">
-                        <i class="fa fa-trash"></i>
-                    </button>
-                </form> {% endcomment %}
-            </td>
         </tr>
         {% endfor %}
     </tbody>

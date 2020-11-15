@@ -17,6 +17,22 @@ class Course(models.Model):
     def weeks(self):
         return Week.objects.filter(course_id=self.id).aggregate(models.Max('number'))['number__max']
 
+    def largest_week_number(self):
+        return Week.objects.filter(course_id=self.id).aggregate(models.Max('number'))['number__max']
+
+    def biggest_week_load(self):
+        weeks = Week.objects.filter(course_id=self.id)
+        max_load = 0
+        for week in weeks:
+            load = Action.objects.filter(week=week.id).aggregate(
+                models.Sum('load'))['load__sum']
+            if load == None:
+                continue
+            if load > max_load:
+                max_load = load
+
+        return max_load
+
 
 class Week(models.Model):
     number = models.IntegerField()
@@ -52,6 +68,7 @@ class Action(models.Model):
     load = models.IntegerField()
     ordering = models.IntegerField()
     week = models.ForeignKey(Week, on_delete=models.CASCADE)
+    splittable = models.BooleanField(default=True)
 
     def __str__(self):
         return self.description

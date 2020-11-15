@@ -25,6 +25,8 @@ class NewActionForm(forms.Form):
         widget=forms.Textarea)
     load = forms.IntegerField(
         label='Study load')
+    splittable = forms.BooleanField(
+        label='Splittable in separate study blocks:', initial=True, required=False)
 
     def __init__(self, *args, **kwargs):
         course_id = kwargs.pop('course_id')

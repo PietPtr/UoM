@@ -1,0 +1,210 @@
+{% extends 'instance/base.html' %}
+
+{% block instance_data %}
+
+<p>This tool generates a timetable which can be imported in a digital calendar.</p>
+
+<table>
+    <tr>
+        <td>Study block size in hours:</td>
+        <td><input type='number' value='2' step='1' id='maxBlockSize'></input></td>
+    </tr>
+    <tr>
+        <td>Minimum time between study blocks in hours:</td>
+        <td><input type='number' value='4' step='1' id='minTimeBetween'></input></td>
+    </tr>
+    <tr>
+        <td>Skip week numbers (comma separated integers):</td>
+        <td><input type='text' value='52,53' id='skippedWeeks'></input></td>
+    </tr>
+</table>
+<br>
+<p>Click on every hour that is usually free in the coming {{weeks}} weeks. You should select at least {{maxload}} hours.</p>
+
+<table id='calendar' class='cal unselectable'>
+</table>
+<button class="btn btn-primary m-2" onclick="submitPreferences()"><i class="fa fa-arrow-right"></i> Submit preferences</button>
+
+<button class="btn btn-secondary m-2" onclick="clearAll()"><i class="fa fa-eraser"></i> Clear calendar</button>
+
+<a id="icslink" href="#">ICS File</a>
+
+<script>
+function makeIdStr(day, hour) {
+    return 'hour'+day+'-'+hour;
+}
+
+let calendar = $("#calendar");
+
+$(document).ready(() => {
+    restoreCalendarState();
+    $('#maxBlockSize').val(localStorage.getItem('maxBlockSize'));
+    $('#minTimeBetween').val(localStorage.getItem('minTimeBetween'));
+    $('#skippedWeeks').val(localStorage.getItem('skippedWeeks'));
+});
+
+for (let hour = 0; hour < 24 + 1; hour++) {
+    calendar.append('<tr></tr>');
+}
+
+calendar.children('tr').each(function (row) {
+    hour = row - 1;
+    if (row == 0) {
+        for (let day of ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']) {
+            $(this).append('<td class="cal-day">' + day + '</td>')
+        }
+    } else {
+        for (let i = 0; i < 8; i++) {
+            let content = i == 0 ? hour + ':00' : '';
+
+            functionCall = 'selectHour(event,'+(i-1)+','+hour+')';
+            idstr = makeIdStr(i-1, hour);
+
+            $(this).append('<td class="cal-hour" onmousedown="'+functionCall+'" onmouseenter="'+functionCall+'" id="'+idstr+'">' + content + '</td>');
+        }
+    }
+});
+
+$(window).on('unload', function() {
+    localStorage.setItem('maxBlockSize', $('#maxBlockSize').val());
+    localStorage.setItem('minTimeBetween', $('#minTimeBetween').val());
+    localStorage.setItem('skippedWeeks', $('#skippedWeeks').val());
+});
+
+function switchState(idstr) {
+    setState(idstr, !getState(idstr));
+}
+
+function getState(idstr) {
+    let element = $('#' + idstr);
+    return element.css('background-color') != 'rgba(0, 0, 0, 0)'
+}
+
+function setState(idstr, state, doSave=true) {
+    let element = $('#' + idstr);
+
+    if (state) {
+        element.css('background-color', 'rgba(195, 230, 203, 255)');
+    } else {
+        element.css('background-color', 'rgba(0, 0, 0, 0)');
+    }
+
+    if (doSave) {
+        saveCalendarState();
+    }
+}
+
+function clearAll() {
+    for (let d = 0; d < 7; d++) {
+        for (let h = 0; h < 24; h++) {
+            setState(makeIdStr(d, h), false);
+        }
+    }
+}
+
+function selectHour(event, day, hour) {
+    if (event.buttons > 0) {
+        let idstr = '#' + makeIdStr(day, hour);
+        
+        if (day == -1) {
+            for (let d = 0; d < 7; d++) {
+                setState(makeIdStr(d, hour), true);
+            }
+            return;
+        }
+        
+        switchState(makeIdStr(day, hour));
+        
+    }
+}
+
+function saveCalendarState() {
+    calendarState = []
+    for (let d = 0; d < 7; d++) {
+        calendarState.push([])
+        for (let h = 0; h < 24; h++) {
+            calendarState[d].push(getState(makeIdStr(d, h)));
+        }
+    }
+
+    localStorage.setItem('calendar', JSON.stringify(calendarState));
+
+}
+
+function restoreCalendarState() {
+    calendarState = JSON.parse(localStorage.getItem('calendar'));
+    
+    for (let d = 0; d < 7; d++) {
+        for (let h = 0; h < 24; h++) {
+            setState(makeIdStr(d, h), calendarState[d][h], false);
+        }
+    }
+}
+
+function countHours() {
+    hours = 0;
+    for (let d = 0; d < 7; d++) {
+        for (let h = 0; h < 24; h++) {
+            hours += getState(makeIdStr(d, h)) ? 1 : 0;
+        }
+    }
+
+    return hours;
+}
+
+function getTimeBlocks() {
+    blocks = [];
+    lastState = false;
+    block = [];
+    for (let d = 0; d < 7; d++) {
+        for (let h = 0; h < 24; h++) {
+            state = getState(makeIdStr(d, h));
+            if (lastState == false && state == true) {
+                block.push([d, h]);
+            } else if (lastState == true && state == false) {
+                block.push([d, h]);
+                blocks.push(block);
+                block = [];
+            }
+            lastState = state;
+        }
+    }
+
+    console.log(blocks);
+
+    return blocks;
+}
+
+function submitPreferences() {
+    let data = addcsrf({
+        blocks: JSON.stringify(getTimeBlocks()),
+        maxBlockSize: $('#maxBlockSize').val(),
+        skippedWeeks: $('#skippedWeeks').val(),
+        minTimeBetween: $('#minTimeBetween').val()
+    });
+
+    console.log(data);
+
+    $.ajax({
+        url: "/student/course_instance/{{instance.id}}/planner/generate_ics/",
+        type: "POST",
+        data: data,
+        success: (result) => {
+            $('#icslink').attr('href', "data:text/calendar;charset=utf8," + escape(result));
+            $('#icslink').css('visibility', 'visible');
+        },
+        error: (result) => {
+            console.error(result);
+        }
+    }).fail((xhr, text, error) => {
+        console.error(xhr, text, error);
+    });
+
+    event.stopPropagation(); 
+}
+
+
+
+</script>
+
+{% endblock %}

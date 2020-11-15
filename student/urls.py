@@ -26,5 +26,12 @@ urlpatterns = [
     path('course_instance/<int:instance_id>/action/<int:action_id>/undo_complete',
          views.undo_complete_action, name='undo_complete_action'),
 
+    path('course_instance/<int:instance_id>/planner/',
+         views.view_planner, name='view_planner'),
+    path('course_instance/<int:instance_id>/planner/generate_ics/',
+         views.generate_ics, name='generate_ics'),
+
+
+
     path('', views.all_courses, name='all_courses'),
 ]
