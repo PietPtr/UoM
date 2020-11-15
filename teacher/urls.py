@@ -26,7 +26,7 @@ urlpatterns = [
 
     path('add_week/<int:course_id>/', views.add_week, name='add_week'),
 
-    path('', views.all_courses, name='my_courses'),
+    path('', views.all_courses, name='teacher_index'),
     path('delete_aim/<int:aim_id>/', views.delete_aim, name='delete_aim'),
     path('delete_action/<int:action_id>/',
          views.delete_action, name='delete_action'),

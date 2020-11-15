@@ -2,7 +2,7 @@
 
 {% block course_data %}
 <ul class="list-group list-group-flush" id="materials_list">
-        <a href="/teacher/new_material/{{course.id}}" class="list-group-item list-group-item-action">
+        <a href="{% url 'new_material' course.id %}" class="list-group-item list-group-item-action">
             <strong>Upload new material</strong>
         </a>
     {% for material in materials %}

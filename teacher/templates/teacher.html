@@ -2,11 +2,11 @@
 
 {% block navigation %}
 <div class="sidenav teachernav">
-    <a href="/teacher/">Courses</a>
+    <a href="{% url 'teacher_index' %}">Courses</a>
     <a href="#">Profile</a>
     <div class="modeswitcher">
-        <a href="/student/">Student</a>
-        <a href="/accounts/logout/">Log out</a>
+        <a href="{% url 'student_index' %}">Student</a>
+        <a href="{% url 'logout' %}">Log out</a>
     </div>
 </div>
 {% endblock %}

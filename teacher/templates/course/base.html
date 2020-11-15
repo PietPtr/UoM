@@ -5,14 +5,14 @@
     <div class="sticky-top bg-white pt-2">
         <h1>{{ course.name }}</h1>
 
-        <a href="details" class="btn btn-secondary btn-lg course-edit">
+        <a href="{% url 'edit_course_details' course.id %}" class="btn btn-secondary btn-lg course-edit">
             <i class="fa fa-edit"></i> Edit course
         </a>
 
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'home' %}active{% endif %}" 
-                    href="/teacher/course/{{course.id}}">
+                    href="{% url 'view_course_details' course.id %}">
                         Home
                 </a>
             </li>

@@ -33,5 +33,5 @@ urlpatterns = [
 
 
 
-    path('', views.all_courses, name='all_courses'),
+    path('', views.all_courses, name='student_index'),
 ]
