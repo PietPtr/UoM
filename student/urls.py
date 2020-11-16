@@ -9,7 +9,7 @@ urlpatterns = [
          views.enroll_in_course, name='enroll_in_course'),
     path('course/<int:course_id>/', views.view_course, name='view_course'),
 
-    path('course_instance/', views.course_instances, name='course_instances'),
+    #     path('course_instance/', views.course_instances, name='course_instances'),
     path('course_instance/<int:instance_id>/',
          views.view_instance, name='view_instance'),
     path('course_instance/<int:instance_id>/materials/',
@@ -31,7 +31,7 @@ urlpatterns = [
     path('course_instance/<int:instance_id>/planner/generate_ics/',
          views.generate_ics, name='generate_ics'),
 
+    path('all_courses/', views.all_courses, name='all_courses'),
 
-
-    path('', views.all_courses, name='student_index'),
+    path('', views.course_instances, name='student_index'),
 ]
