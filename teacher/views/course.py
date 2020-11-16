@@ -39,7 +39,7 @@ def new_course(request):
     context = {
         'form': form,
         'message': 'Enter a name for this course.',
-        'action_link': '/teacher/new_course/'
+        'action_link': reverse('new_course')
     }
 
     return render(request, 'new_unit.html', context)
@@ -122,7 +122,7 @@ def edit_course_details(request, course_id):
             course.description = form.cleaned_data['description']
             course.published = form.cleaned_data['published']
             course.save()
-        return redirect('/teacher/course/%s' % course_id)
+        return redirect(reverse('view_course_details', course_id))
     else:
         form = NewCourseForm(initial={
             'name': course.name,
@@ -133,7 +133,7 @@ def edit_course_details(request, course_id):
     context = {
         'form': form,
         'message': 'Edit course name and description.',
-        'action_link': '/teacher/course/%s/details/' % course.id
+        'action_link': reverse('edit_course_details', args=[course.id])
     }
 
     return render(request, 'new_unit.html', context)

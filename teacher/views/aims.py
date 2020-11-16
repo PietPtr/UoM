@@ -17,14 +17,14 @@ def new_aim(request, course_id):
                 description=form.cleaned_data['description'],
                 course=Course.objects.get(id=course_id))
             aim.save()
-        return redirect('/teacher/course/%s/aims' % course_id)
+        return redirect(reverse('view_course_aims', args=[course_id]))
     else:
         form = NewAimForm()
 
     context = {
         'form': form,
         'message': 'Enter a new aim for this course.',
-        'action_link': '/teacher/new_aim/' + str(course_id) + '/'
+        'action_link': reverse('new_aim', args=[course_id])
     }
 
     return render(request, 'new_unit.html', context)
@@ -37,7 +37,7 @@ def edit_aim(request, aim_id):
         if form.is_valid():
             aim.description = form.cleaned_data['description']
             aim.save()
-        return redirect('/teacher/course/%s/aims' % course_id)
+        return redirect(reverse('view_course_aims', args=[aim.course.id]))
     else:
         form = NewAimForm(initial={
             'description': aim.description
@@ -46,7 +46,7 @@ def edit_aim(request, aim_id):
     context = {
         'form': form,
         'message': 'Edit properties of this aim.',
-        'action_link': '/teacher/aim/' + str(aim_id) + '/'
+        'action_link': reverse('edit_aim', args=[aim_id])
     }
 
     return render(request, 'new_unit.html', context)
@@ -58,4 +58,4 @@ def delete_aim(request, aim_id):
     if request.method == 'POST':
         aim.delete()
 
-    return redirect('/teacher/course/%s/aims' % aim.course.id)
+    return redirect(reverse('view_course_aims', args=[aim.course.id]))

@@ -48,7 +48,7 @@ def confirm_enrolment(request, course_id):
 
     course_instance.save()
 
-    return redirect('/student/course_instance/%s/' % course_instance.id)
+    return redirect(reverse('view_instance', args=[course_instances.id]))
 
 
 def course_instances(request):

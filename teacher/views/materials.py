@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.db.models import Max
+from django.urls import reverse
 
 from teacher.models import Course, Aim, Action
 from teacher.forms import *
@@ -17,14 +18,14 @@ def new_material(request, course_id):
                 file=request.FILES['file'],
                 course=Course.objects.get(id=course_id))
             material.save()
-            return redirect('/teacher/course/%s/materials' % course_id)
+            return redirect(reverse('view_course_materials', args=[course_id]))
     else:
         form = NewMaterialForm()
 
     context = {
         'form': form,
         'message': 'Upload new material for this course.',
-        'action_link': '/teacher/new_material/' + str(course_id) + '/'
+        'action_link': reverse('new_material', args=[course_id])
     }
 
     return render(request, 'new_unit.html', context)
@@ -36,4 +37,4 @@ def delete_material(request, material_id):
     if request.method == 'POST':
         material.delete()
 
-    return redirect('/teacher/course/%s/materials' % material.course.id)
+    return redirect(reverse('view_course_materials', args=[material.course.id]))

@@ -31,14 +31,14 @@ def new_action(request, course_id):
 
             action.save()
 
-            return redirect('/teacher/course/%s/actions' % course_id)
+            return redirect(reverse('view_course_actions', args=[course_id]))
     else:
         form = NewActionForm(course_id=course_id)
 
     context = {
         'form': form,
         'message': 'Enter a new learning action for this course.',
-        'action_link': '/teacher/new_action/' + str(course_id) + '/'
+        'action_link': reverse('new_action', args=[course_id])
     }
 
     return render(request, 'new_unit.html', context)
@@ -56,7 +56,7 @@ def edit_action(request, action_id):
             action.load = form.cleaned_data['load']
             action.splittable = form.cleaned_data['splittable']
             action.save()
-        return redirect('/teacher/course/%s/actions' % course_id)
+        return redirect(reverse('view_course_actions', args=[course_id]))
     else:
         print(action.aims.all())
         form = NewActionForm(initial={
@@ -70,7 +70,7 @@ def edit_action(request, action_id):
     context = {
         'form': form,
         'message': 'Edit properties of this action.',
-        'action_link': '/teacher/action/' + str(action_id) + '/'
+        'action_link': reverse('edit_action', args=[action_id])
     }
 
     return render(request, 'new_unit.html', context)
@@ -164,7 +164,7 @@ def delete_action(request, action_id):
     if request.method == 'POST':
         action.delete()
 
-    return redirect('/teacher/course/%s/actions' % action.course.id)
+    return redirect(reverse('view_course_actions', action.course.id))
 
 
 def add_week(request, course_id):
@@ -194,4 +194,4 @@ def delete_week(request, week_id):
                 week.number -= 1
                 week.save()
 
-    return redirect('/teacher/course/%s/actions' % course.id)
+    return redirect(reverse('view_course_actions', args=[course.id]))

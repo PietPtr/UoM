@@ -125,4 +125,4 @@ MEDIA_URL = '/media/'
 FILE_UPLOAD_PERMISSIONS = 0o644
 
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/student/course_instance/'
+LOGIN_REDIRECT_URL = '/student/'
