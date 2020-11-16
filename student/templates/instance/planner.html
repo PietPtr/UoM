@@ -186,7 +186,7 @@ function submitPreferences() {
     console.log(data);
 
     $.ajax({
-        url: "/student/course_instance/{{instance.id}}/planner/generate_ics/",
+        url: "{% url 'generate_ics' instance.id %}",
         type: "POST",
         data: data,
         success: (result) => {

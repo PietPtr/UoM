@@ -18,19 +18,19 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'aims' %}active{% endif %}" 
-                    href="/teacher/course/{{course.id}}/aims">
+                    href="{% url 'view_course_aims' course.id %}">
                         Aims
                     </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'actions' %}active{% endif %}" 
-                    href="/teacher/course/{{course.id}}/actions">
+                    href="{% url 'view_course_actions' course.id %}">
                         Actions
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'materials' %}active{% endif %}" 
-                    href="/teacher/course/{{course.id}}/materials">
+                    href="{% url 'view_course_materials' course.id %}">
                         Materials
                 </a>
             </li>

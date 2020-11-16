@@ -8,31 +8,31 @@
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'home' %}active{% endif %}" 
-                    href="/student/course_instance/{{instance.id}}">
+                    href="{% url 'view_instance' instance.id %}">
                         Home
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'aims' %}active{% endif %}" 
-                    href="/student/course_instance/{{instance.id}}/aims">
+                    href="{% url 'view_instance_aims' instance.id %}">
                         Aims
                     </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'actions' %}active{% endif %}" 
-                    href="/student/course_instance/{{instance.id}}/actions">
+                    href="{% url 'view_instance_actions' instance.id %}">
                         Actions
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'materials' %}active{% endif %}" 
-                    href="/student/course_instance/{{instance.id}}/materials">
+                    href="{% url 'view_instance_materials' instance.id %}">
                         Materials
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if nav == 'planner' %}active{% endif %}" 
-                    href="/student/course_instance/{{instance.id}}/planner">
+                    href="{% url 'view_planner' instance.id %}">
                         Planner
                 </a>
             </li>

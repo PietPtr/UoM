@@ -11,8 +11,8 @@
         {% endif %}
     
         <div class="d-flex justify-content-center">
-            <a class="mx-5 btn btn-lg btn-primary" href="enroll/confirm">Yes</a>
-            <a class="mx-5 btn btn-lg btn-secondary" href="/student/course/{{ course.id }}/">No</a>
+            <a class="mx-5 btn btn-lg btn-primary" href="{% url 'confirm_enrolment' course.id %}">Yes</a>
+            <a class="mx-5 btn btn-lg btn-secondary" href="{% url 'view_course' course.id %}">No</a>
         </div>
 
 

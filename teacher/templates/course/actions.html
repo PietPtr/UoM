@@ -27,7 +27,7 @@
     </thead>
     <tbody>
         {% for row in rows %}
-        <tr class="hover-elem" {% if row.type == 'action' %}onclick="location.href='/teacher/action/{{row.id}}'"{% endif %}>
+        <tr class="hover-elem" {% if row.type == 'action' %}onclick="location.href='{% url 'edit_action' row.id %}'"{% endif %}>
             {% if row.type == 'week' %}
             <td><strong>{{row.description}}</strong></td>
             <td></td>
@@ -69,7 +69,7 @@
     function editOrdering(direction, actionId) {
         saveScroll();
         $.ajax({
-            url: "/teacher/action/" + actionId + "/ordering/",
+            url: "{% url 'edit_action_order' action_id=98765 %}".replace("98765", actionId),
             type: "POST",
             data: addcsrf({ direction }),
             success: (result) => {
@@ -88,7 +88,7 @@
     function addWeek(courseId) {
         saveScroll();
         $.ajax({
-            url: "/teacher/add_week/" + courseId + "/",
+            url: "{% url 'add_week' course_id=98765 %}".replace("98765", courseId),
             type: "POST",
             data: addcsrf({ }),
             success: (result) => {
