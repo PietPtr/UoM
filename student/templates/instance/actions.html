@@ -14,7 +14,7 @@
     </thead>
     <tbody>
         {% for row in rows %}
-        <tr class="hover-elem {% if row.green %}table-success{% endif %}" {% if row.type == 'action' %}onclick="location.href='/student/course_instance/{{instance.id}}/action/{{row.id}}'"{% endif %}>
+        <tr class="hover-elem {% if row.green %}table-success{% endif %}" {% if row.type == 'action' %}onclick="location.href='{% url 'view_action' instance.id row.id %}'"{% endif %}>
             {% if row.type == 'week' %}
             <td><strong>{{row.description}}</strong></td>
             <td></td>

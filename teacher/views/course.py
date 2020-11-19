@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.db.models import Max
+from django.urls import reverse
 
 from teacher.models import Course, Aim, Action
 from teacher.forms import *
@@ -122,7 +123,7 @@ def edit_course_details(request, course_id):
             course.description = form.cleaned_data['description']
             course.published = form.cleaned_data['published']
             course.save()
-        return redirect(reverse('view_course_details', course_id))
+        return redirect(reverse('view_course_details', args=[course_id]))
     else:
         form = NewCourseForm(initial={
             'name': course.name,

@@ -6,7 +6,7 @@
         <strong>New aim</strong>
     </a>
     {% for aim in aims %}
-        <a href="{% url 'edit_aim' %}" class="list-group-item list-group-item-action hover-elem">
+        <a href="{% url 'edit_aim' aim.id %}" class="list-group-item list-group-item-action hover-elem">
             <div class="d-flex justify-content-between">
                 {{aim.description}}
                 <form action="{% url 'delete_aim' aim.id %}" method="post">

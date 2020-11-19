@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.db.models import Max, Min
+from django.urls import reverse
 
 from teacher.models import Course, Aim, Action
 from teacher.forms import *
@@ -164,7 +165,7 @@ def delete_action(request, action_id):
     if request.method == 'POST':
         action.delete()
 
-    return redirect(reverse('view_course_actions', action.course.id))
+    return redirect(reverse('view_course_actions', args=[action.course.id]))
 
 
 def add_week(request, course_id):
